@@ -5,8 +5,8 @@ import cors from "cors";
 import { Buffer } from 'buffer';
 
 import authRoutes from "./routes/auth.route.js";
-//this here
 import messageRoutes from "./routes/message.route.js";
+import groupRoutes from "./routes/group.route.js";
 import {app,server} from "./lib/socket.js";
 
 import {connectDB} from "./lib/db.js";
@@ -30,8 +30,8 @@ app.use(cookieParser());
 
 
 app.use("/api/auth",authRoutes);
-//this here
 app.use("/api/messages",messageRoutes);
+app.use("/api/groups",groupRoutes);
 
 server.listen(PORT,()=>  {
     console.log("Server is running on port: "+PORT);

@@ -26,7 +26,7 @@ export const getMessages = async (req, res) => {
         { senderId: myId, receiverId: userToChatId },
         { senderId: userToChatId, receiverId: myId },
       ],
-    });
+    }).populate("senderId", "fullName profilePic");
 
     res.status(200).json(messages);
   } catch (error) {
@@ -53,16 +53,21 @@ export const sendMessage = async (req, res) => {
       receiverId,
       text,
       image: imageUrl,
+      messageType: "direct",
     });
 
     await newMessage.save();
 
+    // Populate sender information
+    const populatedMessage = await Message.findById(newMessage._id)
+      .populate("senderId", "fullName profilePic");
+
     const receiverSocketId = getReceiverSocketId(receiverId);
     if (receiverSocketId) {
-      io.to(receiverSocketId).emit("newMessage", newMessage);
+      io.to(receiverSocketId).emit("newMessage", populatedMessage);
     }
 
-    res.status(201).json(newMessage);
+    res.status(201).json(populatedMessage);
   } catch (error) {
     console.log("Error in sendMessage controller: ", error.message);
     res.status(500).json({ error: "Internal server error" });

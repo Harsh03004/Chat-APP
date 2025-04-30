@@ -13,16 +13,31 @@ const messageSchema = new mongoose.Schema(
         receiverId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true,
         },
 
-        test: {
+        groupId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Group",
+        },
+
+        text: {
             type: String,
         },
 
         image: {
             type: String,
         },
+
+        messageType: {
+            type: String,
+            enum: ["direct", "group"],
+            required: true,
+        },
+
+        isSystemMessage: {
+            type: Boolean,
+            default: false,
+        }
     }, { timestamps: true }
 );
 
