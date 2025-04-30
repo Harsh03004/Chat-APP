@@ -1,13 +1,15 @@
 import { useRef, useState } from "react";
 import { useChatStore } from "../store/useChatStore";
+import { useGroupStore } from "../store/useGroupStore";
 import { Image, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 
-const MessageInput = () => {
+const MessageInput = ({ isGroup = false }) => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
+  const { sendGroupMessage } = useGroupStore();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -33,10 +35,16 @@ const MessageInput = () => {
     if (!text.trim() && !imagePreview) return;
 
     try {
-      await sendMessage({
+      const messageData = {
         text: text.trim(),
         image: imagePreview,
-      });
+      };
+
+      if (isGroup) {
+        await sendGroupMessage(messageData);
+      } else {
+        await sendMessage(messageData);
+      }
 
       // Clear form
       setText("");
@@ -106,4 +114,5 @@ const MessageInput = () => {
     </div>
   );
 };
+
 export default MessageInput;

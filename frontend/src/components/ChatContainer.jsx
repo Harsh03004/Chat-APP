@@ -51,14 +51,22 @@ const ChatContainer = () => {
         {messages.map((message) => (
           <div
             key={message._id}
-            className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
+            className={`chat ${
+              (typeof message.senderId === 'string' 
+                ? message.senderId === authUser._id 
+                : message.senderId._id === authUser._id)
+                ? "chat-end" 
+                : "chat-start"
+            }`}
             ref={messageEndRef}
           >
             <div className=" chat-image avatar">
               <div className="size-10 rounded-full border">
                 <img
                   src={
-                    message.senderId === authUser._id
+                    (typeof message.senderId === 'string'
+                      ? message.senderId === authUser._id
+                      : message.senderId._id === authUser._id)
                       ? authUser.profilePic || "/avatar.png"
                       : selectedUser.profilePic || "/avatar.png"
                   }
